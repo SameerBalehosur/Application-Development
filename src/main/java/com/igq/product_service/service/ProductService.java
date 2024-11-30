@@ -7,6 +7,7 @@ import com.igq.product_service.repository.ProductRepository;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,15 +21,18 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void createProduct(ProductRequest request) {
-
-        Product product = Product.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .price(request.getPrice()).build();
-        productRepository.save(product);
-        log.info("Product {} is created", product.getId());
-
+    public HttpStatus createProduct(ProductRequest request) {
+        if (request.getDescription() != null && request.getName() != null && request.getPrice() != null &&
+                !request.getDescription().isEmpty() && !request.getName().isEmpty()) {
+            Product product = Product.builder()
+                    .name(request.getName())
+                    .description(request.getDescription())
+                    .price(request.getPrice()).build();
+            productRepository.save(product);
+            log.info("Product {} is created", product.getId());
+            return HttpStatus.CREATED;
+        }
+        return HttpStatus.BAD_REQUEST;
     }
 
     public List<ProductResponse> getAllProduct() {

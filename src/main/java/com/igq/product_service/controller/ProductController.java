@@ -17,16 +17,15 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/addProduct")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductRequest request) {
+    public HttpStatus createProduct(@RequestBody ProductRequest request) {
         if (request != null) {
             try {
-                productService.createProduct(request);
+                return productService.createProduct(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-
+        return null;
     }
 
     @GetMapping("/getProduct")
