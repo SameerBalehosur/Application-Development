@@ -40,6 +40,7 @@ public class ProductService {
         if (!all.isEmpty()) {
             return all.stream().map(this::mapToProduct).collect(Collectors.toList());
         }
+        log.info("Fetched All the Products Data {}",all);
         return null;
     }
 
