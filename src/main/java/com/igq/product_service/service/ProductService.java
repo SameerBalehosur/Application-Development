@@ -56,7 +56,7 @@ public class ProductService {
         if (!productRequests.isEmpty()) {
             for (ProductRequest request : productRequests) {
                 product.setName(request.getName());
-                product.setDescription(request.getName());
+                product.setDescription(request.getDescription());
                 product.setPrice(request.getPrice());
                 productRepository.save(product);
             }
