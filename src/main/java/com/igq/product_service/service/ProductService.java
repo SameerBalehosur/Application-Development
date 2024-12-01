@@ -4,6 +4,7 @@ import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.model.Product;
 import com.igq.product_service.repository.ProductRepository;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Builder
+@AllArgsConstructor
 public class ProductService {
 
     @Autowired
@@ -53,18 +55,16 @@ public class ProductService {
     }
 
     public void addProducts(List<ProductRequest> productRequests) {
-        List<Product> produtctList = new ArrayList<>();
-        if (!productRequests.isEmpty()) {
-            for (ProductRequest request : productRequests) {
+        if(!productRequests.isEmpty()){
+            List<Product> collect = productRequests.stream().map(data -> {
                 Product product = new Product();
-                product.setName(request.getName());
-                product.setDescription(request.getDescription());
-                product.setPrice(request.getPrice());
-                produtctList.add(product);
-            }
-            productRepository.saveAll(produtctList);
-            log.info("List of Products That are being adding... {}", produtctList);
-
+                product.setName(data.getName());
+                product.setDescription(data.getDescription());
+                product.setPrice(data.getPrice());
+                return product;
+            }).toList();
+            productRepository.saveAll(collect);
+            log.info("List of Products That are being adding... {}", collect);
         }
     }
 }
