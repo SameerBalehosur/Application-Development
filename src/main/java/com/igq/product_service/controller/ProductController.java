@@ -32,11 +32,18 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<ProductResponse> getAllProduct() {
         try {
-            List<ProductResponse> allProduct = productService.getAllProduct();
-            return allProduct;
+            return productService.getAllProduct();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping("/addProduct")
+    public HttpStatus addProducts(@RequestBody List<ProductRequest> productsRequest) {
+        if(!productsRequest.isEmpty()){
+            productService.addProducts(productsRequest);
+        }
+        return null;
     }
 
 

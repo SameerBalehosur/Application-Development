@@ -40,7 +40,7 @@ public class ProductService {
         if (!all.isEmpty()) {
             return all.stream().map(this::mapToProduct).collect(Collectors.toList());
         }
-        log.info("Fetched All the Products Data {}",all);
+        log.info("Fetched All the Products Data {}", all);
         return null;
     }
 
@@ -49,5 +49,17 @@ public class ProductService {
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice()).build();
+    }
+
+    public void addProducts(List<ProductRequest> productRequests) {
+        Product product = new Product();
+        if (!productRequests.isEmpty()) {
+            for (ProductRequest request : productRequests) {
+                product.setName(request.getName());
+                product.setDescription(request.getName());
+                product.setPrice(request.getPrice());
+                productRepository.save(product);
+            }
+        }
     }
 }
