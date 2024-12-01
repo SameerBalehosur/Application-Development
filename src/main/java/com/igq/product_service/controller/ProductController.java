@@ -38,7 +38,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/addProduct")
+    @PostMapping("/addProducts")
     public HttpStatus addProducts(@RequestBody List<ProductRequest> productsRequest) {
         if(!productsRequest.isEmpty()){
             productService.addProducts(productsRequest);
