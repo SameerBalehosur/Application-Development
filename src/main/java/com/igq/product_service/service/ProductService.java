@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,14 +53,18 @@ public class ProductService {
     }
 
     public void addProducts(List<ProductRequest> productRequests) {
-        Product product = new Product();
+        List<Product> produtctList = new ArrayList<>();
         if (!productRequests.isEmpty()) {
             for (ProductRequest request : productRequests) {
+                Product product = new Product();
                 product.setName(request.getName());
                 product.setDescription(request.getDescription());
                 product.setPrice(request.getPrice());
-                productRepository.save(product);
+                produtctList.add(product);
             }
+            productRepository.saveAll(produtctList);
+            log.info("List of Products That are being adding... {}", produtctList);
+
         }
     }
 }
