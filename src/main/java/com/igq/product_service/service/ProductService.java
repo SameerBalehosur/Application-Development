@@ -24,7 +24,7 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public HttpStatus createProduct(ProductRequest request) {
+    public String createProduct(ProductRequest request) {
         if (request.getDescription() != null && request.getName() != null && request.getPrice() != null &&
                 !request.getDescription().isEmpty() && !request.getName().isEmpty()) {
             Product product = Product.builder()
@@ -33,9 +33,9 @@ public class ProductService {
                     .price(request.getPrice()).build();
             productRepository.save(product);
             log.info("Product {} is created", product.getId());
-            return HttpStatus.CREATED;
+            return "Created";
         }
-        return HttpStatus.BAD_REQUEST;
+        return "Bad Request";
     }
 
     public List<ProductResponse> getAllProduct() {
