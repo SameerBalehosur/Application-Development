@@ -35,6 +35,7 @@ public class ProductService {
             log.info("Product {} is created", product.getId());
             return "Created";
         }
+        log.info("Something went wrong");
         return "Bad Request";
     }
 
