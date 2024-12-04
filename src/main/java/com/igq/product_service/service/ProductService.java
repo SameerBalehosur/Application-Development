@@ -2,6 +2,7 @@ package com.igq.product_service.service;
 
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
+import com.igq.product_service.exception.ProductNotFoundException;
 import com.igq.product_service.model.Product;
 import com.igq.product_service.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,21 @@ public class ProductService {
         }
         log.info("Fetched All the Products Data {}", all);
         return null;
+    }
+
+    public ProductResponse getProductByID(String id) throws ProductNotFoundException {
+        Product allById = productRepository.findAllById(id);
+        ProductResponse productResponse = new ProductResponse();
+        if (allById != null) {
+            productResponse.setId(allById.getId());
+            productResponse.setName(allById.getName());
+            productResponse.setDescription(allById.getDescription());
+            productResponse.setPrice(allById.getPrice());
+        } else {
+            throw new ProductNotFoundException();
+        }
+        return productResponse;
+
     }
 
     private ProductResponse mapToProduct(Product product) {

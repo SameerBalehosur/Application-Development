@@ -18,7 +18,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/addProduct")
-    public ResponseEntity createProduct(@RequestBody ProductRequest request) {
+    public ResponseEntity<?> createProduct(@RequestBody ProductRequest request) {
         if (request != null) {
             try {
                 String product = productService.createProduct(request);
@@ -34,22 +34,39 @@ public class ProductController {
         return null;
     }
 
-    @GetMapping("/getProduct")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<ProductResponse> getAllProduct() {
+    @GetMapping("/getProducts")
+    public ResponseEntity<?> getAllProduct() {
         try {
-            return productService.getAllProduct();
+            List<ProductResponse> allProduct = productService.getAllProduct();
+            if(!allProduct.isEmpty()){
+                return new ResponseEntity<>(allProduct,HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("Products List is Empty!!",HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+    @GetMapping("/getProduct/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable String id) {
+        if(!id.isEmpty()){
+            try {
+                ProductResponse productByID = productService.getProductByID(id);
+                return new ResponseEntity<>(productByID,HttpStatus.FOUND);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return new ResponseEntity<>("Data Not Found with "+id,HttpStatus.NO_CONTENT);
+    }
 
     @PostMapping("/addProducts")
-    public HttpStatus addProducts(@RequestBody List<ProductRequest> productsRequest) {
+    public ResponseEntity<?> addProducts(@RequestBody List<ProductRequest> productsRequest) {
         if(!productsRequest.isEmpty()){
             productService.addProducts(productsRequest);
+            return new ResponseEntity<>("Added",HttpStatus.CREATED);
         }
-        return null;
+        return new ResponseEntity<>("List can't be Empty",HttpStatus.BAD_REQUEST);
     }
 
 
