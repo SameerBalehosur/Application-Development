@@ -28,7 +28,7 @@ public class ProductService {
 
     public String createProduct(ProductRequest request) {
         if (request == null || request.getDescription() == null || request.getDescription().isEmpty() || request.getName() == null || request.getName().isEmpty() || request.getPrice() == null) {
-            throw new InvalidProductRequestException();
+            throw new InvalidProductRequestException("Invalid product request: All fields (name, description, and price) must be non-empty.");
         }
         Product product = Product.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).build();
         productRepository.save(product);
@@ -51,7 +51,7 @@ public class ProductService {
         Product allById;
         allById = productRepository.findAllById(id);
         if (allById == null) {
-            throw new ProductNotFoundException();
+            throw new ProductNotFoundException("Product with ID " + id + " not found.");
         }
         productResponse.setId(allById.getId());
         productResponse.setName(allById.getName());
