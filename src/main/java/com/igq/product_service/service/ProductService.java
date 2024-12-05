@@ -49,19 +49,19 @@ public class ProductService {
         return null;
     }
 
-    public ProductResponse getProductByID(String id) throws ProductNotFoundException {
-        Product allById = productRepository.findAllById(id);
+    public ProductResponse getProductByID(String id) {
         ProductResponse productResponse = new ProductResponse();
-        if (allById != null) {
-            productResponse.setId(allById.getId());
-            productResponse.setName(allById.getName());
-            productResponse.setDescription(allById.getDescription());
-            productResponse.setPrice(allById.getPrice());
-        } else {
-            throw new ProductNotFoundException();
+        Product allById;
+        allById = productRepository.findAllById(id);
+        if (allById == null) {
+            throw new ProductNotFoundException("Product with ID " + id + " not found.");
         }
-        return productResponse;
+        productResponse.setId(allById.getId());
+        productResponse.setName(allById.getName());
+        productResponse.setDescription(allById.getDescription());
+        productResponse.setPrice(allById.getPrice());
 
+        return productResponse;
     }
 
     private ProductResponse mapToProduct(Product product) {
