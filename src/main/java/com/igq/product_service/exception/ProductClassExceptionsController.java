@@ -15,4 +15,10 @@ public class ProductClassExceptionsController {
         return new ResponseEntity<>("Product not Found With ID!", HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler(InvalidProductRequestException.class)
+    public ResponseEntity<String> invalidProductRequestExceptionHandle(InvalidProductRequestException productNotFoundException){
+        return new ResponseEntity<>("Invalid product request: All fields (name, description, and price) must be non-empty.", HttpStatus.BAD_REQUEST);
+    }
+
 }

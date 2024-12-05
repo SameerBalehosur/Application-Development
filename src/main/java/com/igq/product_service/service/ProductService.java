@@ -2,6 +2,7 @@ package com.igq.product_service.service;
 
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
+import com.igq.product_service.exception.InvalidProductRequestException;
 import com.igq.product_service.exception.ProductNotFoundException;
 import com.igq.product_service.model.Product;
 import com.igq.product_service.repository.ProductRepository;
@@ -26,18 +27,14 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public String createProduct(ProductRequest request) {
-        if (request.getDescription() != null && request.getName() != null && request.getPrice() != null &&
-                !request.getDescription().isEmpty() && !request.getName().isEmpty()) {
-            Product product = Product.builder()
-                    .name(request.getName())
-                    .description(request.getDescription())
-                    .price(request.getPrice()).build();
-            productRepository.save(product);
-            log.info("Product {} is created", product.getId());
-            return "Created";
+        if (request == null || request.getDescription() == null || request.getDescription().isEmpty() || request.getName() == null || request.getName().isEmpty() || request.getPrice() == null) {
+            throw new InvalidProductRequestException();
         }
-        log.info("Something went wrong");
-        return "Bad Request";
+        Product product = Product.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).build();
+        productRepository.save(product);
+        log.info("Product {} is created", product.getId());
+        return "Created";
+
     }
 
     public List<ProductResponse> getAllProduct() {
@@ -54,7 +51,7 @@ public class ProductService {
         Product allById;
         allById = productRepository.findAllById(id);
         if (allById == null) {
-            throw new ProductNotFoundException("Product with ID " + id + " not found.");
+            throw new ProductNotFoundException();
         }
         productResponse.setId(allById.getId());
         productResponse.setName(allById.getName());
@@ -65,14 +62,11 @@ public class ProductService {
     }
 
     private ProductResponse mapToProduct(Product product) {
-        return ProductResponse.builder().id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice()).build();
+        return ProductResponse.builder().id(product.getId()).name(product.getName()).description(product.getDescription()).price(product.getPrice()).build();
     }
 
     public void addProducts(List<ProductRequest> productRequests) {
-        if(!productRequests.isEmpty()){
+        if (!productRequests.isEmpty()) {
             List<Product> collect = productRequests.stream().map(data -> {
                 Product product = new Product();
                 product.setName(data.getName());
