@@ -2,6 +2,8 @@ package com.igq.product_service.controller;
 
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
+import com.igq.product_service.exception.InvalidProductRequestException;
+import com.igq.product_service.exception.ProductNotFoundException;
 import com.igq.product_service.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +66,22 @@ public class ProductController {
         }
         return new ResponseEntity<>("List can't be Empty", HttpStatus.BAD_REQUEST);
     }
+
+    @PutMapping("/updateProduct/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody ProductRequest request) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new InvalidProductRequestException("Product ID cannot be null or empty.");
+        }
+        try {
+            ProductResponse updatedProduct = productService.updateProduct(id, request);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (ProductNotFoundException e) {
+            throw e; // Custom exception for non-existing product
+        } catch (InvalidProductRequestException e) {
+            throw e; // Custom exception for invalid request
+        }
+    }
+
 
 
 }

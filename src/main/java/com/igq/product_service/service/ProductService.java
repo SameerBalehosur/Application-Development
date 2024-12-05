@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,4 +79,32 @@ public class ProductService {
             log.info("List of Products That are being adding... {}", collect);
         }
     }
+    public ProductResponse updateProduct(String id, ProductRequest request) {
+        if (request == null ||
+                (request.getName() != null && request.getName().trim().isEmpty()) ||
+                (request.getDescription() != null && request.getDescription().trim().isEmpty()) ||
+                (request.getPrice() != null && request.getPrice().compareTo(BigDecimal.ZERO)<0)) {
+            throw new InvalidProductRequestException("Invalid product request: Fields must be non-empty and price must be non-negative.");
+        }
+        Product product = productRepository.findById(id).orElseThrow(() ->
+                new ProductNotFoundException("Product with ID " + id + " not found."));
+        if (request.getName() != null) {
+            product.setName(request.getName());
+        }
+        if (request.getDescription() != null) {
+            product.setDescription(request.getDescription());
+        }
+        if (request.getPrice() != null) {
+            product.setPrice(request.getPrice());
+        }
+        Product updatedProduct = productRepository.save(product);
+        ProductResponse response = new ProductResponse();
+        response.setId(updatedProduct.getId());
+        response.setName(updatedProduct.getName());
+        response.setDescription(updatedProduct.getDescription());
+        response.setPrice(updatedProduct.getPrice());
+
+        return response;
+    }
+
 }
