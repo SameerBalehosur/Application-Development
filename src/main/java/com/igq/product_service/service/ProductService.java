@@ -58,6 +58,7 @@ public class ProductService {
         productResponse.setName(allById.getName());
         productResponse.setDescription(allById.getDescription());
         productResponse.setPrice(allById.getPrice());
+        log.info("Product Updated Vals {}",productResponse);
 
         return productResponse;
     }
