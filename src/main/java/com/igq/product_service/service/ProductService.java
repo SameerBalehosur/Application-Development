@@ -104,6 +104,7 @@ public class ProductService {
         response.setName(updatedProduct.getName());
         response.setDescription(updatedProduct.getDescription());
         response.setPrice(updatedProduct.getPrice());
+        log.info("Product Updated Vals {}",response);
 
         return response;
     }
