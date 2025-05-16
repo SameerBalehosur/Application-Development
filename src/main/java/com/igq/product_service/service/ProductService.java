@@ -89,6 +89,7 @@ public class ProductService {
         }
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new ProductNotFoundException("Product with ID " + id + " not found."));
+        log.info("Product Data for validation--->{}",product);
         if (request.getName() != null) {
             product.setName(request.getName());
         }
