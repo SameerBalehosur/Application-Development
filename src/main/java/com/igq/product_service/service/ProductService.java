@@ -94,6 +94,7 @@ public class ProductService {
             product.setName(request.getName());
         }
         if (request.getDescription() != null) {
+            log.info("Inside the Description Setting Page");
             product.setDescription(request.getDescription());
         }
         if (request.getPrice() != null) {
