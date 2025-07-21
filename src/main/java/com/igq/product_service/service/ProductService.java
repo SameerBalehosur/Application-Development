@@ -81,6 +81,9 @@ public class ProductService {
         }
     }
     public ProductResponse updateProduct(String id, ProductRequest request) {
+        if(request instanceof ProductRequest){
+            log.info("Checking te Product Request Type to add further Implementation {}",request instanceof ProductRequest);
+        }
         if (request == null ||
                 (request.getName() != null && request.getName().trim().isEmpty()) ||
                 (request.getDescription() != null && request.getDescription().trim().isEmpty()) ||
