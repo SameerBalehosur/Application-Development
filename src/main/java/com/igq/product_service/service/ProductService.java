@@ -34,7 +34,7 @@ public class ProductService {
         Product product = Product.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).build();
         productRepository.save(product);
         log.info("Product {} is created", product.getId());
-        return "Created";
+        return product.getId();
 
     }
 

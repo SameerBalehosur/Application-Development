@@ -1,5 +1,6 @@
 package com.igq.product_service.controller;
 
+import com.igq.product_service.constants.ProductsConstants;
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.exception.InvalidProductRequestException;
@@ -24,7 +25,7 @@ public class ProductController {
         if (request != null) {
             try {
                 String product = productService.createProduct(request);
-                if (product.equalsIgnoreCase("Created")) {
+                if (product.equalsIgnoreCase(ProductsConstants.CREATED)) {
                     return new ResponseEntity<>(product, HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(product, HttpStatus.BAD_REQUEST);
