@@ -81,6 +81,9 @@ public class ProductService {
         }
     }
     public ProductResponse updateProduct(String id, ProductRequest request) {
+        if(request instanceof ProductRequest){
+            log.info("Checking te Product Request Type to add further Implementation {}",request instanceof ProductRequest);
+        }
         if (request == null ||
                 (request.getName() != null && request.getName().trim().isEmpty()) ||
                 (request.getDescription() != null && request.getDescription().trim().isEmpty()) ||
@@ -89,10 +92,12 @@ public class ProductService {
         }
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new ProductNotFoundException("Product with ID " + id + " not found."));
+        log.info("Product Data for validation--->{}",product);
         if (request.getName() != null) {
             product.setName(request.getName());
         }
         if (request.getDescription() != null) {
+            log.info("Inside the Description Setting Page");
             product.setDescription(request.getDescription());
         }
         if (request.getPrice() != null) {
