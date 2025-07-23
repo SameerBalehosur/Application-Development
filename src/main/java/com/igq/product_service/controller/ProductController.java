@@ -5,8 +5,12 @@ import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.exception.InvalidProductRequestException;
 import com.igq.product_service.exception.ProductNotFoundException;
+import com.igq.product_service.model.Product;
 import com.igq.product_service.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +85,13 @@ public class ProductController {
         } catch (InvalidProductRequestException e) {
             throw e; // Custom exception for invalid request
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchAllProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        ProductResponse response = productService.getAllProducts(pageable);
+        return ResponseEntity.ok(response);
     }
 
 
