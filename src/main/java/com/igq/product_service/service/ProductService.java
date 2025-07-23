@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,7 @@ public class ProductService {
         Product product = Product.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).build();
         productRepository.save(product);
         log.info("Product {} is created", product.getId());
-        return "Created";
+        return product.getId();
 
     }
 
@@ -58,7 +60,7 @@ public class ProductService {
         productResponse.setName(allById.getName());
         productResponse.setDescription(allById.getDescription());
         productResponse.setPrice(allById.getPrice());
-        log.info("Product Updated Vals {}",productResponse);
+        log.info("Product Updated Vals {}", productResponse);
 
         return productResponse;
     }
@@ -80,19 +82,20 @@ public class ProductService {
             log.info("List of Products That are being adding... {}", collect);
         }
     }
+
     public ProductResponse updateProduct(String id, ProductRequest request) {
-        if(request instanceof ProductRequest){
-            log.info("Checking te Product Request Type to add further Implementation {}",request instanceof ProductRequest);
+        if (request instanceof ProductRequest) {
+            log.info("Checking te Product Request Type to add further Implementation {}", request instanceof ProductRequest);
         }
         if (request == null ||
                 (request.getName() != null && request.getName().trim().isEmpty()) ||
                 (request.getDescription() != null && request.getDescription().trim().isEmpty()) ||
-                (request.getPrice() != null && request.getPrice().compareTo(BigDecimal.ZERO)<0)) {
+                (request.getPrice() != null && request.getPrice().compareTo(BigDecimal.ZERO) < 0)) {
             throw new InvalidProductRequestException("Invalid product request: Fields must be non-empty and price must be non-negative.");
         }
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new ProductNotFoundException("Product with ID " + id + " not found."));
-        log.info("Product Data for validation--->{}",product);
+        log.info("Product Data for validation--->{}", product);
         if (request.getName() != null) {
             product.setName(request.getName());
         }
@@ -109,9 +112,15 @@ public class ProductService {
         response.setName(updatedProduct.getName());
         response.setDescription(updatedProduct.getDescription());
         response.setPrice(updatedProduct.getPrice());
-        log.info("Product Updated Vals {}",response);
+        log.info("Product Updated Vals {}", response);
 
         return response;
     }
+
+    public ProductResponse getAllProducts(Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return ProductResponse.builder().productList(productPage.getContent()).totalItems(productPage.getTotalElements()).totalPages(productPage.getTotalPages()).currentPage(productPage.getNumber()).build();
+    }
+
 
 }
