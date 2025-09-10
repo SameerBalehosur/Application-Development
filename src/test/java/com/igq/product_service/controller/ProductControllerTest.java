@@ -86,4 +86,18 @@ class ProductControllerTest {
         verify(productRepository, times(1)).findAll(pageable);
     }
 
+    @Test
+    void getProductByIdSuccessfully() {
+        //Arrange
+        Product product = new Product("1", "Laptop", 1000.0);
+        //Call or Act
+        when(productRepository.findAllById(product.getId())).thenReturn(product);
+        //Mapping
+        ProductResponse productByID = productService.getProductByID(product.getId());
+        //Checking
+        assertEquals("1",productByID.getId());
+        assertEquals("Laptop",productByID.getName());
+        assertEquals(BigDecimal.valueOf(1000.0),productByID.getPrice());
+    }
+
 }
