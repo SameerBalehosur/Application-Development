@@ -1,19 +1,29 @@
 package com.igq.product_service.controller;
 
 import com.igq.product_service.dto.ProductRequest;
+import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.model.Product;
 import com.igq.product_service.repository.ProductRepository;
 import com.igq.product_service.service.ProductService;
-import org.junit.jupiter.api.Assertions;
+import static org.mockito.Mockito.verify;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,9 +58,32 @@ class ProductControllerTest {
         String productId = productService.createProduct(request);
 
         // Assert
-        Assertions.assertEquals("1", productId);
+        assertEquals("1", productId);
     }
 
+    @Test
+    void getAllProductsSuccessfully() {
+        // Arrange
+        Product product1 = new Product("1", "Laptop", 1000.0);
+        Product product2 = new Product("2", "Mobile", 500.0);
 
+        List<Product> products = List.of(product1, product2);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> productPage = new PageImpl<>(products, pageable, products.size());
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+
+        // Act
+        ProductResponse response = productService.getAllProducts(pageable);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(2, response.getTotalItems());
+        assertEquals(1, response.getTotalPages());
+        assertEquals(2, response.getProductList().size());
+        assertEquals("Laptop", response.getProductList().get(0).getName());
+
+        verify(productRepository, times(1)).findAll(pageable);
+    }
 
 }
