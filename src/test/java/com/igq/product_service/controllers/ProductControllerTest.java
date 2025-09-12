@@ -3,6 +3,7 @@ package com.igq.product_service.controllers;
 import com.igq.product_service.constants.ProductsConstants;
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
+import com.igq.product_service.exception.ProductNotFoundException;
 import com.igq.product_service.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
@@ -124,10 +125,34 @@ class ProductControllerTest {
 
     @Test
     public void addProductsFail() {
-//Declared Empty List and checking flow
+        //Declared Empty List and checking flow
         List<ProductRequest> productRequests = new ArrayList<>();
         ResponseEntity<?> responseEntity = productController.addProducts(productRequests);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void updateProductSuccess() {
+        String id = "12";
+        ProductRequest request = new ProductRequest();
+        ProductResponse response = new ProductResponse();
+        when(productService.updateProduct(id, request)).thenReturn(response);
+
+        ResponseEntity<?> responseEntity = productController.updateProduct(id, request);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void updateProductFail() {
+        String id = " 1";
+        ProductRequest request = new ProductRequest();
+        ProductResponse response = new ProductResponse();
+        when(productService.updateProduct(id, request)).thenThrow(new ProductNotFoundException("Not Found"));
+        assertThrows(ProductNotFoundException.class, () -> {
+            productController.updateProduct(id, request);
+        });
+
+        verify(productService, times(1)).updateProduct(id, request);
     }
 
 }
