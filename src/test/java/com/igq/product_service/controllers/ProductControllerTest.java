@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,8 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -152,6 +153,30 @@ class ProductControllerTest {
         });
 
         verify(productService, times(1)).updateProduct(id, request);
+    }
+
+    @Test
+    public void searchAllProductsSuccess(){
+        Pageable pageable= PageRequest.of(1,10);
+        ProductResponse response=new ProductResponse();
+        when(productService.getAllProducts(pageable)).thenReturn(response);
+        ResponseEntity<?> responseEntity = productController.searchAllProducts(pageable.getPageNumber(), pageable.getPageSize());
+
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        assertTrue(responseEntity.getBody() instanceof ProductResponse);
+        verify(productService,times(1)).getAllProducts(pageable);
+
+    }
+    @Test
+    public void searchAllProductsFail(){
+        Pageable pageable= PageRequest.of(1,10);
+        ProductResponse response=new ProductResponse();
+        when(productService.getAllProducts(pageable)).thenReturn(response);
+        ResponseEntity<?> responseEntity = productController.searchAllProducts(pageable.getPageNumber(), pageable.getPageSize());
+        long totalItems = response.getTotalItems();
+
+        assertEquals(totalItems,0);
+
     }
 
 }
