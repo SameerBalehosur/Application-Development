@@ -1,14 +1,12 @@
-package com.igq.product_service.controller;
+package com.igq.product_service.controllers;
 
 import com.igq.product_service.constants.ProductsConstants;
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.exception.InvalidProductRequestException;
 import com.igq.product_service.exception.ProductNotFoundException;
-import com.igq.product_service.model.Product;
 import com.igq.product_service.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
