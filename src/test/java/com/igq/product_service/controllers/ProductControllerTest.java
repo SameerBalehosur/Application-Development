@@ -40,11 +40,12 @@ class ProductControllerTest {
 
         Mockito.when(productService.createProduct(request)).thenReturn(ProductsConstants.CREATED);
         ResponseEntity<?> product = productController.createProduct(request);
-        assertEquals(HttpStatus.CREATED,product.getStatusCode());
-        assertEquals(ProductsConstants.CREATED,product.getBody());
-        Mockito.verify(productService,Mockito.times(1)).createProduct(request);
+        assertEquals(HttpStatus.CREATED, product.getStatusCode());
+        assertEquals(ProductsConstants.CREATED, product.getBody());
+        Mockito.verify(productService, Mockito.times(1)).createProduct(request);
 
     }
+
     @Test
     void createProductFail() {
         ProductRequest request = new ProductRequest();
@@ -52,8 +53,8 @@ class ProductControllerTest {
 
         Mockito.when(productService.createProduct(request)).thenReturn(String.valueOf(HttpStatus.BAD_REQUEST));
         ResponseEntity<?> product = productController.createProduct(request);
-        assertEquals(HttpStatus.BAD_REQUEST,product.getStatusCode());
-        Mockito.verify(productService,Mockito.times(1)).createProduct(request);
+        assertEquals(HttpStatus.BAD_REQUEST, product.getStatusCode());
+        Mockito.verify(productService, Mockito.times(1)).createProduct(request);
 
     }
 
@@ -68,41 +69,41 @@ class ProductControllerTest {
         Mockito.when(productService.getAllProduct()).thenReturn(productResponses);
         ResponseEntity<?> allProduct = productController.getAllProduct();
         assertEquals(HttpStatus.OK, allProduct.getStatusCode());
-        Mockito.verify(productService,Mockito.times(1)).getAllProduct();
+        Mockito.verify(productService, Mockito.times(1)).getAllProduct();
 
     }
+
     @Test
     public void getAllProductEmptyList() {
         List<ProductResponse> productResponses = new ArrayList<>();
         Mockito.when(productService.getAllProduct()).thenReturn(productResponses);
         ResponseEntity<?> allProduct = productController.getAllProduct();
         assertEquals(HttpStatus.NOT_FOUND, allProduct.getStatusCode());
-        Mockito.verify(productService,Mockito.times(1)).getAllProduct();
+        Mockito.verify(productService, Mockito.times(1)).getAllProduct();
 
     }
 
     @Test
     public void getProductByIdSuccess() {
         String productID = "111";
-        String name="sameer";
+        String name = "sameer";
         ProductResponse productResponse = new ProductResponse();
         productResponse.setId(productID);
         productResponse.setName(name);
 
         Mockito.when(productService.getProductByID(productID)).thenReturn(productResponse);
         ResponseEntity<?> productById = productController.getProductById(productID);
-        assertEquals(HttpStatus.OK,productById.getStatusCode());
+        assertEquals(HttpStatus.OK, productById.getStatusCode());
 
     }
+
     @Test
     public void getProductByIdFail() {
         String productID = "";
         ProductResponse productResponse = new ProductResponse();
         productResponse.setId(productID);
-
-//        Mockito.when(productService.getProductByID(productID)).thenReturn(productResponse);
         ResponseEntity<?> productById = productController.getProductById(productID);
-        assertEquals(HttpStatus.BAD_REQUEST,productById.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, productById.getStatusCode());
 
     }
 
