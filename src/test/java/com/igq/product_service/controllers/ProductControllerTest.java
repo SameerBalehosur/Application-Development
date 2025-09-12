@@ -81,4 +81,29 @@ class ProductControllerTest {
 
     }
 
+    @Test
+    public void getProductByIdSuccess() {
+        String productID = "111";
+        String name="sameer";
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(productID);
+        productResponse.setName(name);
+
+        Mockito.when(productService.getProductByID(productID)).thenReturn(productResponse);
+        ResponseEntity<?> productById = productController.getProductById(productID);
+        assertEquals(HttpStatus.OK,productById.getStatusCode());
+
+    }
+    @Test
+    public void getProductByIdFail() {
+        String productID = "";
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(productID);
+
+//        Mockito.when(productService.getProductByID(productID)).thenReturn(productResponse);
+        ResponseEntity<?> productById = productController.getProductById(productID);
+        assertEquals(HttpStatus.BAD_REQUEST,productById.getStatusCode());
+
+    }
+
 }
