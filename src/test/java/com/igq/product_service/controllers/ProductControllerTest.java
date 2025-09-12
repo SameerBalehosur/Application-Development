@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
@@ -105,6 +107,27 @@ class ProductControllerTest {
         ResponseEntity<?> productById = productController.getProductById(productID);
         assertEquals(HttpStatus.BAD_REQUEST, productById.getStatusCode());
 
+    }
+
+    @Test
+    public void addProductsSuccess() {
+        ProductRequest request = new ProductRequest();
+        request.setName("Laptop");
+        request.setPrice(BigDecimal.valueOf(1000.0));
+
+        List<ProductRequest> productRequests = List.of(request);
+        Mockito.doNothing().when(productService).addProducts(productRequests);
+        ResponseEntity<?> responseEntity = productController.addProducts(productRequests);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        verify(productService, times(1)).addProducts(productRequests);
+    }
+
+    @Test
+    public void addProductsFail() {
+//Declared Empty List and checking flow
+        List<ProductRequest> productRequests = new ArrayList<>();
+        ResponseEntity<?> responseEntity = productController.addProducts(productRequests);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
 }
