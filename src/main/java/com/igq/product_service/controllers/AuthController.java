@@ -1,4 +1,4 @@
-package com.igq.product_service.controller;
+package com.igq.product_service.controllers;
 
 import com.igq.product_service.component.JwtUtil;
 import com.igq.product_service.dto.AuthRequest;

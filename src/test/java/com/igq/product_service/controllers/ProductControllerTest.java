@@ -1,11 +1,12 @@
-package com.igq.product_service.controller;
+package com.igq.product_service.controllers;
 
 import com.igq.product_service.dto.ProductRequest;
 import com.igq.product_service.dto.ProductResponse;
 import com.igq.product_service.model.Product;
 import com.igq.product_service.repository.ProductRepository;
 import com.igq.product_service.service.ProductService;
-import static org.mockito.Mockito.verify;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,14 +18,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
@@ -32,6 +32,15 @@ class ProductControllerTest {
     ProductService productService;
     @Mock
     ProductRepository productRepository;
+
+
+    @BeforeAll
+    public static void decalringBeforeAll(){
+//        product.setId("1");
+//        product.setName("Sameer");
+//        product.setDescription("iPhone-15");
+//        product.setPrice(BigDecimal.valueOf(12345));
+    }
 
 
     @Test
@@ -62,7 +71,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getAllProductsSuccessfully() {
+    public void getAllProductsSuccessfully() {
         // Arrange
         Product product1 = new Product("1", "Laptop", 1000.0);
         Product product2 = new Product("2", "Mobile", 500.0);
@@ -87,7 +96,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductByIdSuccessfully() {
+    public void getProductByIdSuccessfully() {
         //Arrange
         Product product = new Product("1", "Laptop", 1000.0);
         //Call or Act
@@ -100,4 +109,21 @@ class ProductControllerTest {
         assertEquals(BigDecimal.valueOf(1000.0),productByID.getPrice());
     }
 
+    @Test
+    void addProductsSuccessfully() {
+        Product product1 = new Product("1", "Laptop", 1000.0);
+        Product product2 = new Product("2", "Mobile", 500.0);
+
+        List<Product> products = List.of(product1, product2);
+        ProductRequest request =new ProductRequest();
+        request.setProductlist(products);
+
+        List<ProductRequest> requestList = new ArrayList<>();
+        requestList.add(request);
+
+        doNothing().when(productService).addProducts(requestList);
+
+
+        verify(productService,times(1)).addProducts(requestList);
+    }
 }
