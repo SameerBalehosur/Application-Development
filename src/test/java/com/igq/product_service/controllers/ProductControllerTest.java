@@ -146,7 +146,6 @@ class ProductControllerTest {
     public void updateProductFail() {
         String id = " 1";
         ProductRequest request = new ProductRequest();
-        ProductResponse response = new ProductResponse();
         when(productService.updateProduct(id, request)).thenThrow(new ProductNotFoundException("Not Found"));
         assertThrows(ProductNotFoundException.class, () -> {
             productController.updateProduct(id, request);
