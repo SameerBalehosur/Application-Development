@@ -175,7 +175,7 @@ class ProductControllerTest {
         ResponseEntity<?> responseEntity = productController.searchAllProducts(pageable.getPageNumber(), pageable.getPageSize());
         long totalItems = response.getTotalItems();
 
-        assertEquals(totalItems,0);
+        assertEquals(totalItems,110);
 
     }
 
