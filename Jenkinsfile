@@ -1,32 +1,30 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'M3'   // same name as you gave in Jenkins Tools
+        jdk 'JDK17'  // (optional but recommended)
+    }
+
     stages {
         stage('Build') {
             steps {
-                echo "Build Stage"
-//                 sh 'mvn clean compile'
+                echo "Building..."
+                bat 'mvn clean compile'   // 👈 use 'bat' for Windows agent
             }
         }
+
         stage('Test') {
             steps {
-                echo "Test Stage"
-                sh 'mvn test'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo "Deploy Stage"
+                echo "Running tests..."
+                bat 'mvn test'
             }
         }
     }
 
     post {
         always {
-            junit '**/target/surefire-reports/*.xml' // Publish test results
-        }
-        failure {
-            echo "Pipeline failed due to errors."
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
