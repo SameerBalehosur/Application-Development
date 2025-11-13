@@ -69,19 +69,48 @@ public class ProductService {
     }
 
     public void addProducts(List<ProductRequest> productRequests) {
-        if (!productRequests.isEmpty()) {
-            List<Product> collect = productRequests.stream().map(data -> {
-                Product product = new Product();
-                product.setName(data.getName());
-                product.setDescription(data.getDescription());
-                product.setPrice(data.getPrice());
-                return product;
-            }).toList();
-            productRepository.saveAll(collect);
-            log.info("List of Products That are being adding... {}", collect);
+        if (productRequests == null || productRequests.isEmpty()) {
+            throw new InvalidProductRequestException("Product list cannot be empty.");
+        }
+
+        // Filtering out invalid ProductRequest objects
+        List<Product> validProducts = productRequests.stream()
+                .filter(request -> {
+                    try {
+                        validateProductRequest(request);
+                        return true;
+                    } catch (InvalidProductRequestException e) {
+                        log.warn("Skipping invalid product request: {}", request, e);
+                        return false;
+                    }
+                })
+                .map(data -> {
+                    Product product = new Product();
+                    product.setName(data.getName());
+                    product.setDescription(data.getDescription());
+                    product.setPrice(data.getPrice());
+                    return product;
+                })
+                .toList();
+
+        if (validProducts.isEmpty()) {
+            throw new InvalidProductRequestException("No valid products to add.");
+        }
+
+        productRepository.saveAll(validProducts);
+        log.info("List of valid products added: {}", validProducts);
+    }
+    private void validateProductRequest(ProductRequest request) {
+        if (request.getName() == null || request.getName().isEmpty()) {
+            throw new InvalidProductRequestException("Product name cannot be null or empty.");
+        }
+        if (request.getDescription() == null || request.getDescription().isEmpty()) {
+            throw new InvalidProductRequestException("Product description cannot be null or empty.");
+        }
+        if (request.getPrice() == null || request.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidProductRequestException("Product price must be greater than zero.");
         }
     }
-
     public ProductResponse updateProduct(String id, ProductRequest request) {
         if (request instanceof ProductRequest) {
             log.info("Checking te Product Request Type to add further Implementation {}", request instanceof ProductRequest);
