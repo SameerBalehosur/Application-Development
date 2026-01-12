@@ -29,6 +29,7 @@ public class ProductService {
 
     public String createProduct(ProductRequest request) {
         if (request == null || request.getDescription() == null || request.getDescription().isEmpty() || request.getName() == null || request.getName().isEmpty() || request.getPrice() == null) {
+            log.info("Product {} Exception Raised for Invalid Request Data");
             throw new InvalidProductRequestException("Invalid product request: All fields (name, description, and price) must be non-empty.");
         }
         Product product = Product.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).build();
