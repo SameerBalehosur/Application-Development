@@ -70,6 +70,7 @@ public class ProductService {
     }
 
     public void addProducts(List<ProductRequest> productRequests) {
+        log.info("Adding multiple products: {}", productRequests);
         if (productRequests == null || productRequests.isEmpty()) {
             throw new InvalidProductRequestException("Product list cannot be empty.");
         }
